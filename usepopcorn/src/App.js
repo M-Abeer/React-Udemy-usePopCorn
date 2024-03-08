@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Children, useState } from "react";
 
 const tempMovieData = [
   {
@@ -56,18 +56,24 @@ export default function App() {
 
   return (
     <>
-      <Navbar movies={movies} query={query} onSetQuery={setQuery} />
-      <Main movies={movies} />
+      <Navbar query={query} onSetQuery={setQuery}>
+        <Numresult movies={movies} />
+      </Navbar>
+      <Main>
+        <ListBox movies={movies}>
+          <List movies={movies} />
+        </ListBox>
+      </Main>
     </>
   );
 }
 
-const Navbar = ({ movies, query, onSetQuery }) => {
+const Navbar = ({ children, query, onSetQuery }) => {
   return (
     <nav className="nav-bar">
       <Logo />
       <Input query={query} onSetQuery={onSetQuery} />
-      <Numresult movies={movies} />
+      {children}
     </nav>
   );
 };
@@ -98,21 +104,21 @@ const Numresult = ({ movies }) => {
   );
 };
 
-const Main = ({ movies }) => {
+const Main = ({ children }) => {
   return (
     <main className="main">
-      <ListBox movies={movies} />
+      {children}
       <Watched />
     </main>
   );
 };
 
-const ListBox = ({ movies }) => {
+const ListBox = ({ children }) => {
   const [isOpen1, setIsOpen1] = useState(true);
   return (
     <div className="box">
       <Button isOpen1={isOpen1} setIsOpen1={setIsOpen1} />
-      {isOpen1 && <List movies={movies} />}
+      {isOpen1 && children}
     </div>
   );
 };
