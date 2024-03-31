@@ -52,18 +52,27 @@ const average = (arr) =>
 
 const KEY = "f77ce815";
 export default function App() {
-  const [query, setQuery] = useState("qwerty");
+  const [query, setQuery] = useState("amazon");
   const [movies, setMovies] = useState([]);
   const [isLoader, setIsLoader] = useState(false);
   const [error, setError] = useState("");
+  const [selectedId, setSelectedId] = useState(null);
 
   // fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=interstellar
   // `)
   //   .then((res) => res.json())
   //   .then((data) => setMovies(data.Search));
   useEffect(() => {
+    console.log("A");
+  }, [query]);
+  useEffect(() => {
+    console.log("B");
+  });
+  useEffect(() => {
     async function fetchData() {
       try {
+        console.log(query);
+        setError("");
         setIsLoader(true);
         const res = await fetch(
           `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
@@ -79,9 +88,15 @@ export default function App() {
       } finally {
         setIsLoader(false);
       }
+
+      if (query.length < 3) {
+        setMovies([]);
+        setError("");
+        return;
+      }
     }
     fetchData();
-  }, []);
+  }, [query]);
 
   return (
     <>
