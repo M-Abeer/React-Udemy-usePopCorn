@@ -50,9 +50,9 @@ const tempWatchedData = [
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
-// const KEY = "f77ce815";
+const KEY = "f77ce815";
 export default function App() {
-  const [query, setQuery] = useState("ethgf");
+  const [query, setQuery] = useState("qwerty");
   const [movies, setMovies] = useState([]);
   const [isLoader, setIsLoader] = useState(false);
   const [error, setError] = useState("");
