@@ -50,9 +50,9 @@ const tempWatchedData = [
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
-const KEY = "f77ce815";
+// const KEY = "f77ce815";
 export default function App() {
-  const [query, setQuery] = useState("amazon");
+  const [query, setQuery] = useState("ethgf");
   const [movies, setMovies] = useState([]);
   const [isLoader, setIsLoader] = useState(false);
   const [error, setError] = useState("");
@@ -71,7 +71,7 @@ export default function App() {
         if (!res.ok)
           throw new error("Something went wrong with fetching movies");
         const data = await res.json();
-        if (data.Response === "false") throw new Error("Movie not found");
+        if (data.Response === "False") throw new Error("Movie not found");
         console.log(data.Search);
         setMovies(data.Search);
       } catch (err) {
@@ -92,24 +92,23 @@ export default function App() {
         <ListBox movies={movies}>
           {/* {isLoader ? <Loader /> : <List movies={movies} />} */}
           {/* only one statement run at a time */}
-          {isLoader && <Loader/>}
-          {
-            isLoader && !error && <List movies={movies} />
-          }
-          {error && <ErrorMessage message={error }/>}
+          {isLoader && <Loader />}
+          {!isLoader && !error && <List movies={movies} />}
+          {error && <ErrorMessage message={error} />}
         </ListBox>
       </Main>
     </>
   );
 }
 
-const ErrorMessage(message){
-  return(
+const ErrorMessage = ({ message }) => {
+  return (
     <p className="error">
-      <span>💀</span>{message}
+      <span>💀</span>
+      {message}
     </p>
-  )
-}
+  );
+};
 const Loader = () => {
   return <p className="loader">Loading...</p>;
 };
