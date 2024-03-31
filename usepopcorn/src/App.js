@@ -111,7 +111,9 @@ export default function App() {
           {!isLoader && !error && <List movies={movies} />}
           {error && <ErrorMessage message={error} />}
         </ListBox>
-        {/* <ListBox movies={movies}></ListBox> */}
+        <ListBox movies={movies}>
+          {selectedId ? <MovieDetails selectedId={selectedId} /> : null}
+        </ListBox>
       </Main>
     </>
   );
@@ -169,6 +171,7 @@ const Main = ({ children }) => {
   return (
     <main className="main">
       {children}
+
       {/* <Watched /> */}
     </main>
   );
