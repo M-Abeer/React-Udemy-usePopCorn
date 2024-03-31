@@ -56,18 +56,18 @@ export default function App() {
   const [movies, setMovies] = useState([]);
   const [isLoader, setIsLoader] = useState(false);
   const [error, setError] = useState("");
-  const [selectedId, setSelectedId] = useState(null);
+  const [selectedId, setSelectedId] = useState("tt0092546");
 
   // fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=interstellar
   // `)
   //   .then((res) => res.json())
   //   .then((data) => setMovies(data.Search));
-  useEffect(() => {
-    console.log("A");
-  }, [query]);
-  useEffect(() => {
-    console.log("B");
-  });
+  // useEffect(() => {
+  //   console.log("A");
+  // }, [query]);
+  // useEffect(() => {
+  //   console.log("B");
+  // });
   useEffect(() => {
     async function fetchData() {
       try {
@@ -182,6 +182,9 @@ const ListBox = ({ children }) => {
     </div>
   );
 };
+function MovieDetails({ selectedId }) {
+  return <div className="details">{selectedId}</div>;
+}
 const Watched = () => {
   const [watched, setWatched] = useState(tempWatchedData);
 
