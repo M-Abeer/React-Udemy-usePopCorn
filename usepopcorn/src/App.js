@@ -54,6 +54,7 @@ const KEY = "f77ce815";
 export default function App() {
   const [query, setQuery] = useState("amazon");
   const [movies, setMovies] = useState([]);
+  const [isLoader, setIsLoader] = useState(false);
 
   // fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=interstellar
   // `)
@@ -61,12 +62,14 @@ export default function App() {
   //   .then((data) => setMovies(data.Search));
   useEffect(() => {
     async function fetchData() {
+      setIsLoader(true);
       const res = await fetch(
         `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
       );
       const data = await res.json();
       console.log(data.Search);
       setMovies(data.Search);
+      setIsLoader(false);
     }
     fetchData();
   }, []);
@@ -78,12 +81,16 @@ export default function App() {
       </Navbar>
       <Main>
         <ListBox movies={movies}>
-          <List movies={movies} />
+          {isLoader ? <Loader /> : <List movies={movies} />}
         </ListBox>
       </Main>
     </>
   );
 }
+
+const Loader = () => {
+  return <p className="loader">Loading...</p>;
+};
 
 const Navbar = ({ children, query, onSetQuery }) => {
   return (
