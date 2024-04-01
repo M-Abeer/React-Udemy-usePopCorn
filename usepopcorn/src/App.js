@@ -56,7 +56,7 @@ export default function App() {
   const [movies, setMovies] = useState([]);
   const [isLoader, setIsLoader] = useState(false);
   const [error, setError] = useState("");
-  const [selectedId, setSelectedId] = useState("tt0092546");
+  const [selectedId, setSelectedId] = useState(null);
 
   // fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=interstellar
   // `)
@@ -68,6 +68,13 @@ export default function App() {
   // useEffect(() => {
   //   console.log("B");
   // });
+
+  function handleSelectMovie(id) {
+    setSelectedId(id);
+  }
+  function handleCloseMovie() {
+    setSelectedId(null);
+  }
   useEffect(() => {
     async function fetchData() {
       try {
@@ -108,11 +115,18 @@ export default function App() {
           {/* {isLoader ? <Loader /> : <List movies={movies} />} */}
           {/* only one statement run at a time */}
           {isLoader && <Loader />}
-          {!isLoader && !error && <List movies={movies} />}
+          {!isLoader && !error && (
+            <List movies={movies} handleSelectMovie={handleSelectMovie} />
+          )}
           {error && <ErrorMessage message={error} />}
         </ListBox>
         <ListBox movies={movies}>
-          {selectedId ? <MovieDetails selectedId={selectedId} /> : null}
+          {selectedId ? (
+            <MovieDetails
+              selectedId={selectedId}
+              handleCloseMovie={handleCloseMovie}
+            />
+          ) : null}
         </ListBox>
       </Main>
     </>
@@ -186,8 +200,26 @@ const ListBox = ({ children }) => {
     </div>
   );
 };
-function MovieDetails({ selectedId }) {
-  return <div className="details">{selectedId}</div>;
+function MovieDetails({ selectedId, handleCloseMovie }) {
+  const [movie, setMovie] = useState({});
+  useEffect(() => {
+    async function getMovieDetails() {
+      const res = await fetch(
+        `http://www.omdbapi.com/?apikey=${KEY}&i=${selectedId}`
+      );
+      const data = await res.json();
+      setMovie(data);
+    }
+    getMovieDetails();
+  }, []);
+  return (
+    <div className="details">
+      <button className="btn-back" onClick={handleCloseMovie}>
+        &larr;
+      </button>
+      {selectedId}
+    </div>
+  );
 }
 const Watched = () => {
   const [watched, setWatched] = useState(tempWatchedData);
@@ -264,11 +296,11 @@ const Button = ({ isOpen1, setIsOpen1 }) => {
     </button>
   );
 };
-const List = ({ movies }) => {
+const List = ({ movies, handleSelectMovie }) => {
   return (
-    <ul className="list">
+    <ul className="list list-movies">
       {movies?.map((movie) => (
-        <li key={movie.imdbID}>
+        <li onClick={() => handleSelectMovie(movie.imdbID)} key={movie.imdbID}>
           <img src={movie.Poster} alt={`${movie.Title} poster`} />
           <h3>{movie.Title}</h3>
           <div>
