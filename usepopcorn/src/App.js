@@ -53,11 +53,12 @@ const average = (arr) =>
 
 const KEY = "f77ce815";
 export default function App() {
-  const [query, setQuery] = useState("amazon");
+  const [query, setQuery] = useState("Amazon");
   const [movies, setMovies] = useState([]);
   const [isLoader, setIsLoader] = useState(false);
   const [error, setError] = useState("");
   const [selectedId, setSelectedId] = useState(null);
+  const [watched, setWatched] = useState([]);
 
   // fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=interstellar
   // `)
@@ -73,6 +74,9 @@ export default function App() {
   function handleSelectMovie(id) {
     // setSelectedId(id);
     setSelectedId((selectedId) => (id === selectedId ? null : id));
+  }
+  function handleAddWatched(movie) {
+    setWatched((watched) => [...watched, movie]);
   }
   function handleCloseMovie() {
     setSelectedId(null);
@@ -126,13 +130,18 @@ export default function App() {
           <ListBox movies={movies}>
             {selectedId ? (
               <MovieDetails
+                onAddWatched={handleAddWatched}
                 selectedId={selectedId}
                 handleCloseMovie={handleCloseMovie}
               />
             ) : null}
           </ListBox>
         ) : (
-          <Watched />
+          <Watched
+            watched={watched}
+            setWatched={setWatched}
+            handleAddWatched={handleAddWatched}
+          />
         )}
       </Main>
     </>
@@ -191,7 +200,6 @@ const Main = ({ children }) => {
   return (
     <main className="main">
       {children}
-
       {/* <Watched /> */}
     </main>
   );
@@ -206,7 +214,7 @@ const ListBox = ({ children }) => {
     </div>
   );
 };
-function MovieDetails({ selectedId, handleCloseMovie }) {
+function MovieDetails({ selectedId, handleCloseMovie, onAddWatched }) {
   const [movie, setMovie] = useState({});
   const [isLoader, setIsLoader] = useState(false);
   const {
@@ -221,6 +229,22 @@ function MovieDetails({ selectedId, handleCloseMovie }) {
     Director: director,
     Genre: genre,
   } = movie;
+  function handleAdd() {
+    const newWatchedMovie = {
+      imdbID: selectedId,
+      title,
+      year,
+      poster,
+      imdbRating: Number(imdbRating),
+      runtime: Number(runtime.split(" ").at(0)),
+    };
+
+    onAddWatched(newWatchedMovie);
+    handleCloseMovie();
+
+    // setAvgRating(Number(imdbRating));
+    // setAvgRating((avgRating) => (avgRating + userRating) / 2);
+  }
   // console.log(title, year);
   //Pehle movie empty ho gi to display undefined
   // then due to useEffect value occurs
@@ -263,6 +287,9 @@ function MovieDetails({ selectedId, handleCloseMovie }) {
         "
           >
             <StarRating maxRating={10} size={24} />
+            <button className="btn-add" onClick={handleAdd}>
+              + Add to list
+            </button>
           </div>
           <p>
             <em>{plot}</em>
@@ -274,8 +301,8 @@ function MovieDetails({ selectedId, handleCloseMovie }) {
     </div>
   );
 }
-const Watched = () => {
-  const [watched, setWatched] = useState(tempWatchedData);
+const Watched = ({ watched, setWatched }) => {
+  // const [watched, setWatched] = useState(tempWatchedData);
 
   const [isOpen2, setIsOpen2] = useState(true);
 
@@ -317,8 +344,8 @@ const Watched = () => {
           <ul className="list">
             {watched.map((movie) => (
               <li key={movie.imdbID}>
-                <img src={movie.Poster} alt={`${movie.Title} poster`} />
-                <h3>{movie.Title}</h3>
+                <img src={movie.poster} alt={`${movie.Title} poster`} />
+                <h3>{movie.title}</h3>
                 <div>
                   <p>
                     <span>⭐️</span>
