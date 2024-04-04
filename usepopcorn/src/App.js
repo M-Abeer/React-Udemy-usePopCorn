@@ -217,6 +217,8 @@ const ListBox = ({ children }) => {
 function MovieDetails({ selectedId, handleCloseMovie, onAddWatched }) {
   const [movie, setMovie] = useState({});
   const [isLoader, setIsLoader] = useState(false);
+  const [userRating, setUserRating] = useState("");
+
   const {
     Title: title,
     Year: year,
@@ -237,6 +239,7 @@ function MovieDetails({ selectedId, handleCloseMovie, onAddWatched }) {
       poster,
       imdbRating: Number(imdbRating),
       runtime: Number(runtime.split(" ").at(0)),
+      userRating,
     };
 
     onAddWatched(newWatchedMovie);
@@ -282,14 +285,13 @@ function MovieDetails({ selectedId, handleCloseMovie, onAddWatched }) {
         </header>
 
         <section>
-          <div
-            className="rating
-        "
-          >
-            <StarRating maxRating={10} size={24} />
-            <button className="btn-add" onClick={handleAdd}>
-              + Add to list
-            </button>
+          <div className="rating">
+            <StarRating maxRating={10} size={24} onSetRating={setUserRating} />
+            {userRating > 0 && (
+              <button className="btn-add" onClick={handleAdd}>
+                + Add to list
+              </button>
+            )}
           </div>
           <p>
             <em>{plot}</em>
@@ -344,7 +346,7 @@ const Watched = ({ watched, setWatched }) => {
           <ul className="list">
             {watched.map((movie) => (
               <li key={movie.imdbID}>
-                <img src={movie.poster} alt={`${movie.Title} poster`} />
+                <img src={movie.poster} alt={`${movie.title} poster`} />
                 <h3>{movie.title}</h3>
                 <div>
                   <p>

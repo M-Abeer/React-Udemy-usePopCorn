@@ -36,7 +36,7 @@ function StarRating({
               key={i + 1}
               handleRating={() => {
                 setRating(i + 1);
-                // onSetRating(i + 1);
+                onSetRating(i + 1);
               }}
               handleHoverIn={() => {
                 setTempRating(i + 1);
