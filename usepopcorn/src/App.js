@@ -53,7 +53,7 @@ const average = (arr) =>
 
 const KEY = "f77ce815";
 export default function App() {
-  const [query, setQuery] = useState("Amazon");
+  const [query, setQuery] = useState("");
   const [movies, setMovies] = useState([]);
   const [isLoader, setIsLoader] = useState(false);
   const [error, setError] = useState("");
@@ -87,6 +87,22 @@ export default function App() {
     setWatched((watched) => watched.filter((movie) => movie.imdbID !== id));
   }
   useEffect(() => {
+    document.addEventListener("keydown", function (e) {
+      if (e.code === "Escape") {
+        handleCloseMovie();
+      }
+    });
+
+    return function () {
+      document.removeEventListener("keydown", function (e) {
+        if (e.code === "Escape") {
+          handleCloseMovie();
+        }
+      });
+    };
+  }, []);
+
+  useEffect(() => {
     async function fetchData() {
       try {
         // console.log(query);
@@ -113,6 +129,7 @@ export default function App() {
         return;
       }
     }
+    handleCloseMovie();
     fetchData();
   }, [query]);
 
@@ -272,6 +289,14 @@ function MovieDetails({ selectedId, handleCloseMovie, onAddWatched, watched }) {
     }
     getMovieDetails();
   }, [movie]);
+
+  useEffect(() => {
+    if (!title) return;
+    document.title = `Movie | ${title}`;
+    return function () {
+      document.title = "use Popcorn";
+    };
+  }, [title]);
   return (
     <div className="details">
       <>
@@ -384,7 +409,7 @@ const Watched = ({ watched, setWatched, handleDeleteWatchedMovies }) => {
                   </p>
                   <button
                     className="btn-delete"
-                    onClick={handleDeleteWatchedMovies}
+                    onClick={() => handleDeleteWatchedMovies(movie.imdbID)}
                   >
                     X
                   </button>
